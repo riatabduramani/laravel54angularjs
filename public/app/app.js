@@ -3,10 +3,18 @@ var app = angular.module("productsList", [])
 
 app.controller('productsController', function($scope, $http, API_URL) {
 
-	$http.get(API_URL + 'products')
-		.then(function(response) {
-			$scope.products = response.data;
-		});
+	//$http.get(API_URL + 'products')
+
+      $scope.loading = true;
+      $http.get(API_URL + 'products').then( function ( response ) {
+        $scope.products = response.data;
+      }, function ( response ) {
+        // TODO: handle the error somehow
+      }).finally(function() {
+        // called no matter success or failure
+        $scope.loading = false;
+      });
+
 
 	//show modal form of products
     $scope.toggle = function(modalshow, id) {
@@ -43,10 +51,11 @@ app.controller('productsController', function($scope, $http, API_URL) {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function(response) {
                     console.log(response.data);
-                    location.reload();
+                    //location.reload();
                 });
             } else {
                 var url = API_URL + "products";
+                $scope.loading = true;
                 $http({
                 method: 'POST',
                 url: url,
@@ -54,7 +63,8 @@ app.controller('productsController', function($scope, $http, API_URL) {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function(response) {
                     console.log(response.data);
-                    location.reload();
+                    $scope.products.push({'name': response.data.name, 'price': response.data.price});
+                    $scope.loading = false;
                 });
             }
         
@@ -64,13 +74,15 @@ app.controller('productsController', function($scope, $http, API_URL) {
 	//delete product
     $scope.confirmDelete = function(id) {
         var isConfirmDelete = confirm('Do you want to delete this product?');
+        $scope.loading = true;
         if (isConfirmDelete) {
             $http({
                 method: 'DELETE',
                 url: API_URL + 'products/' + id
             }).then(function(response) {
                         console.log(response.data);
-                        location.reload();
+                        $scope.products.splice(response, 1);
+                        $scope.loading = false;
                     });
         } else {
             return false;

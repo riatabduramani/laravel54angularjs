@@ -4,6 +4,7 @@
 	<title>Products</title>
 	<link rel="stylesheet" type="text/css" href="/css/app.css">
 	<script src="js/app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <div class="col-md-12">
@@ -11,9 +12,13 @@
 	<div>
 		<h1>Products</h1>
 	</div>
+
 	<div ng-controller="productsController">
+
 			<div class="col-md-6">
-				<table class="table">
+				<table class="table" ng-table="tableParams">
+                    
+    <i class="fa fa-spinner fa-spin" style="font-size:24px" ng-show="loading"></i>
 					<thead>
 						<tr>
 							<th>Product name</th>
@@ -33,7 +38,6 @@
 					</tbody>
 				</table>	
 			</div>
-	
 
   <!-- START -->
   	<!-- Modal (Pop up when detail button clicked) -->
